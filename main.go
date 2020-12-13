@@ -14,7 +14,7 @@ func main() {
 	var piece string
 	var finished bool = false
 
-	grid := map[int]map[int]string{}
+	grid := map[int]map[int]string{} // 2d map grid for the main game
 
 	for row := 0; row <= ROW; row++ {
 		grid[row] = map[int]string{}
@@ -32,14 +32,14 @@ func main() {
 					grid[row][column] = strconv.Itoa(row)
 				}
 			} else {
-				grid[row][column] = "--"
+				grid[row][column] = " "
 			}
 		}
 	}
 
 	for !finished {
 
-		for row := 0; row <= ROW; row++ {
+		for row := 0; row <= ROW; row++ { // printing the grid in slice form for better screen view
 			var slice []string
 			for column := 0; column <= COLUMN; column++ {
 				slice = append(slice, grid[row][column])
@@ -60,7 +60,7 @@ func main() {
 
 		grid[a][b] = piece
 
-		for row := 0; row <= ROW; row++ {
+		for row := 0; row <= ROW; row++ { // win conditions
 			for column := 0; column <= COLUMN; column++ {
 				for b+4 <= COLUMN {
 					if grid[a][b] == grid[a][b+1] && grid[a][b] == grid[a][b+2] && grid[a][b] == grid[a][b+3] && grid[a][b] == grid[a][b+4] && grid[a][b] != "  " {
@@ -87,14 +87,14 @@ func main() {
 	end()
 }
 
-func numType(a uint) bool {
+func numType(a uint) bool { // false if even, true if odd
 	if a%2 == 0 {
 		return false
 	}
 	return true
 }
 
-func input(i, j int) (int, int) {
+func input(i, j int) (int, int) { // row and column input control
 	x := bufio.NewScanner(os.Stdin)
 	y := bufio.NewScanner(os.Stdin)
 	fmt.Printf("Enter row number, press ENTER, then enter column number: \n")
@@ -122,7 +122,7 @@ func input(i, j int) (int, int) {
 	return intInputx, intInputy
 }
 
-func end() {
+func end() { // game end conditions
 	end := bufio.NewScanner(os.Stdin)
 	fmt.Printf("Press ENTER to end")
 	end.Scan()
