@@ -49,10 +49,10 @@ func main() {
 
 		if numType(count) {
 			turn = "Black"
-			piece = "B"
+			piece = "B "
 		} else {
 			turn = "White"
-			piece = "W"
+			piece = "W "
 		}
 
 		fmt.Printf("It's %v's turn\n", turn)
