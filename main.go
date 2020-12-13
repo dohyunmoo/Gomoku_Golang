@@ -14,9 +14,10 @@ func main() {
 	var piece string
 	var finished bool = false
 
-	var grid [ROW + 1][COLUMN + 1]string
+	grid := map[int]map[int]string{}
 
 	for row := 0; row <= ROW; row++ {
+		grid[row] = map[int]string{}
 		for column := 0; column <= COLUMN; column++ {
 			if row == 0 {
 				if column < 10 {
@@ -24,16 +25,14 @@ func main() {
 				} else {
 					grid[row][column] = strconv.Itoa(column)
 				}
-			}
-			if column == 0 {
+			} else if column == 0 {
 				if row < 10 {
 					grid[row][column] = strconv.Itoa(row) + " "
 				} else {
 					grid[row][column] = strconv.Itoa(row)
 				}
-			}
-			if grid[row][column] == "" {
-				grid[row][column] = "  "
+			} else {
+				grid[row][column] = "--"
 			}
 		}
 	}
@@ -41,7 +40,11 @@ func main() {
 	for !finished {
 
 		for row := 0; row <= ROW; row++ {
-			fmt.Println(grid[row])
+			var slice []string
+			for column := 0; column <= COLUMN; column++ {
+				slice = append(slice, grid[row][column])
+			}
+			fmt.Println(slice)
 		}
 
 		if numType(count) {
