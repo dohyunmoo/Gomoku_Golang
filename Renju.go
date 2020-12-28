@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"sync"
+	"time"
 )
 
 type Coordinate struct {
@@ -81,8 +82,6 @@ func main() {
 			board = whiteBoard
 		}
 
-		sort(board)
-
 		grid[a][b] = piece
 
 		go func() { // hor check
@@ -90,11 +89,12 @@ func main() {
 			indx := 1
 			for _, element := range board {
 				for element.column <= 11 && indx < len(board) {
-					if containsHor(element.column, board) && containsHor(element.column+1, board) && containsHor(element.column+2, board) && containsHor(element.column+3, board) && containsHor(element.column+4, board) {
+					if contains(element.row, element.column, board) && contains(element.row, element.column+1, board) && contains(element.row, element.column+2, board) && contains(element.row, element.column+3, board) && contains(element.row, element.column+4, board) {
 						for row := 0; row <= ROW; row++ {
 							fmt.Println(grid[row])
 						}
 						fmt.Printf("%v wins!\n", turn)
+						time.Sleep(10 * time.Second)
 						os.Exit(1)
 					}
 					indx++
@@ -107,11 +107,12 @@ func main() {
 			indy := 1
 			for _, element := range board {
 				for element.row <= 11 && indy < len(board) {
-					if containsVert(element.row, board) && containsVert(element.row+1, board) && containsVert(element.row+2, board) && containsVert(element.row+3, board) && containsVert(element.row+4, board) {
+					if contains(element.row, element.column, board) && contains(element.row+1, element.column, board) && contains(element.row+2, element.column, board) && contains(element.row+3, element.column, board) && contains(element.row+4, element.column, board) {
 						for row := 0; row <= ROW; row++ {
 							fmt.Println(grid[row])
 						}
 						fmt.Printf("%v wins!\n", turn)
+						time.Sleep(10 * time.Second)
 						os.Exit(1)
 					}
 					indy++
@@ -124,11 +125,12 @@ func main() {
 			indd1 := 1
 			for _, element := range board {
 				for element.row <= 11 && element.column <= 11 && indd1 < len(board) {
-					if containsDiag(element.row, element.column, board) && containsDiag(element.row+1, element.column+1, board) && containsDiag(element.row+2, element.column+2, board) && containsDiag(element.row+3, element.column+3, board) && containsDiag(element.row+4, element.column+4, board) {
+					if contains(element.row, element.column, board) && contains(element.row+1, element.column+1, board) && contains(element.row+2, element.column+2, board) && contains(element.row+3, element.column+3, board) && contains(element.row+4, element.column+4, board) {
 						for row := 0; row <= ROW; row++ {
 							fmt.Println(grid[row])
 						}
 						fmt.Printf("%v wins!\n", turn)
+						time.Sleep(10 * time.Second)
 						os.Exit(1)
 					}
 					indd1++
@@ -141,11 +143,12 @@ func main() {
 			indd2 := 1
 			for _, element := range board {
 				for element.row <= 11 && element.column >= 5 && indd2 < len(board) {
-					if containsDiag(element.row, element.column, board) && containsDiag(element.row+1, element.column-1, board) && containsDiag(element.row+2, element.column-2, board) && containsDiag(element.row+3, element.column-3, board) && containsDiag(element.row+4, element.column-4, board) {
+					if contains(element.row, element.column, board) && contains(element.row+1, element.column-1, board) && contains(element.row+2, element.column-2, board) && contains(element.row+3, element.column-3, board) && contains(element.row+4, element.column-4, board) {
 						for row := 0; row <= ROW; row++ {
 							fmt.Println(grid[row])
 						}
 						fmt.Printf("%v wins!\n", turn)
+						time.Sleep(10 * time.Second)
 						os.Exit(1)
 					}
 					indd2++
@@ -165,25 +168,7 @@ func numType(a uint) bool { // false if even, true if odd
 	return true
 }
 
-func containsHor(val int, brd []Coordinate) bool {
-	for _, element := range brd {
-		if element.column == val {
-			return true
-		}
-	}
-	return false
-}
-
-func containsVert(val int, brd []Coordinate) bool {
-	for _, element := range brd {
-		if element.row == val {
-			return true
-		}
-	}
-	return false
-}
-
-func containsDiag(val1, val2 int, brd []Coordinate) bool {
+func contains(val1, val2 int, brd []Coordinate) bool {
 	for _, element := range brd {
 		if element.row == val1 && element.column == val2 {
 			return true
@@ -230,28 +215,9 @@ func input(i, j int) (int, int) { // row and column input control
 	return intInputx, intInputy
 }
 
-func sort(brd []Coordinate) {
-	for i := 1; i < len(brd); i++ {
-		key := brd[i]
-		var j int = i - 1
-		for j >= 0 && brd[j].row > key.row {
-			brd[j+1] = brd[j]
-			brd[j] = key
-			j--
-		}
-
-		if j >= 0 && brd[j].row == key.row {
-			for j >= 0 && brd[j].column > key.column {
-				brd[j+1] = brd[j]
-				brd[j] = key
-				j--
-			}
-		}
-	}
-}
-
 func exit() {
 	fmt.Println("Exiting...")
+	time.Sleep(10 * time.Second)
 
 	os.Exit(1)
 }
