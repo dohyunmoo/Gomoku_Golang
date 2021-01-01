@@ -84,11 +84,32 @@ func main() {
 
 		grid[a][b] = piece
 
+		boardRow := board
+		boardColumn := board
+		boardDiag1 := board
+		boardDiag2 := board
+
+		for i, element := range board {
+			if element.row > 11 {
+				boardRow = append(boardRow[:i], boardRow[i+1:]...)
+			}
+			if element.column > 11 {
+				boardColumn = append(boardColumn[:i], boardColumn[i+1:]...)
+			}
+			if element.row > 11 && element.column > 11 {
+				boardDiag1 = append(boardDiag1[:i], boardDiag1[i+1:]...)
+			}
+			if element.row > 11 && element.column < 4 {
+				boardDiag2 = append(boardDiag2[:i], boardDiag2[i+1:]...)
+			}
+		}
+
 		go func() { // hor check
 			defer wg.Done()
+			sortRow(board)
 			indx := 1
 			for _, element := range board {
-				for element.column <= 11 && indx < len(board) {
+				for element.column <= 11 && indx < len(boardColumn) {
 					if contains(element.row, element.column, board) && contains(element.row, element.column+1, board) && contains(element.row, element.column+2, board) && contains(element.row, element.column+3, board) && contains(element.row, element.column+4, board) {
 						for row := 0; row <= ROW; row++ {
 							fmt.Println(grid[row])
@@ -104,9 +125,10 @@ func main() {
 
 		go func() { // vert check
 			defer wg.Done()
+			sortColumn(board)
 			indy := 1
 			for _, element := range board {
-				for element.row <= 11 && indy < len(board) {
+				for element.row <= 11 && indy < len(boardRow) {
 					if contains(element.row, element.column, board) && contains(element.row+1, element.column, board) && contains(element.row+2, element.column, board) && contains(element.row+3, element.column, board) && contains(element.row+4, element.column, board) {
 						for row := 0; row <= ROW; row++ {
 							fmt.Println(grid[row])
@@ -122,9 +144,10 @@ func main() {
 
 		go func() { // diagonal 1 check
 			defer wg.Done()
+			sortRow(board)
 			indd1 := 1
 			for _, element := range board {
-				for element.row <= 11 && element.column <= 11 && indd1 < len(board) {
+				for element.row <= 11 && element.column <= 11 && indd1 < len(boardDiag1) {
 					if contains(element.row, element.column, board) && contains(element.row+1, element.column+1, board) && contains(element.row+2, element.column+2, board) && contains(element.row+3, element.column+3, board) && contains(element.row+4, element.column+4, board) {
 						for row := 0; row <= ROW; row++ {
 							fmt.Println(grid[row])
@@ -140,9 +163,10 @@ func main() {
 
 		go func() { // diagonal 2 check
 			defer wg.Done()
+			sortRow(board)
 			indd2 := 1
 			for _, element := range board {
-				for element.row <= 11 && element.column >= 5 && indd2 < len(board) {
+				for element.row <= 11 && element.column >= 5 && indd2 < len(boardDiag2) {
 					if contains(element.row, element.column, board) && contains(element.row+1, element.column-1, board) && contains(element.row+2, element.column-2, board) && contains(element.row+3, element.column-3, board) && contains(element.row+4, element.column-4, board) {
 						for row := 0; row <= ROW; row++ {
 							fmt.Println(grid[row])
@@ -175,6 +199,46 @@ func contains(val1, val2 int, brd []Coordinate) bool {
 		}
 	}
 	return false
+}
+
+func sortRow(brd []Coordinate) {
+	for i := 1; i < len(brd); i++ {
+		key := brd[i]
+		var j int = i - 1
+		for j >= 0 && brd[j].row > key.row {
+			brd[j+1] = brd[j]
+			brd[j] = key
+			j--
+		}
+
+		if j >= 0 && brd[j].row == key.row {
+			for j >= 0 && brd[j].column > key.column {
+				brd[j+1] = brd[j]
+				brd[j] = key
+				j--
+			}
+		}
+	}
+}
+
+func sortColumn(brd []Coordinate) {
+	for i := 1; i < len(brd); i++ {
+		key := brd[i]
+		var j int = i - 1
+		for j >= 0 && brd[j].column > key.column {
+			brd[j+1] = brd[j]
+			brd[j] = key
+			j--
+		}
+
+		if j >= 0 && brd[j].column == key.column {
+			for j >= 0 && brd[j].row > key.row {
+				brd[j+1] = brd[j]
+				brd[j] = key
+				j--
+			}
+		}
+	}
 }
 
 func input(i, j int) (int, int) { // row and column input control
